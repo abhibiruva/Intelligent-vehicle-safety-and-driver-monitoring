@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>
+Intelligent Vehicle Safety & Driver Monitoring
+</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    height: 70px;
+    background: #111827;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    width: 220px;
+    background: #1f2937;
+    color: white;
+    padding: 25px 15px;
+}
+
+.sidebar-title {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 20px;
+}
+
+.sidebar-item {
+    padding: 13px;
+    margin-bottom: 7px;
+    border-radius: 7px;
+    cursor: default;
+}
+
+.sidebar-item.active {
+    background: #374151;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.main {
+    flex: 1;
+    padding: 25px;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   CAMERA SECTION
+   ========================================================= */
+
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.camera-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.camera-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.camera-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.camera-status {
+    float: right;
+    font-size: 12px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.camera-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #111827;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.camera-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* =========================================================
+   STATUS CARDS
+   ========================================================= */
+
+.status-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.status-card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+}
+
+.status-label {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.status-value {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* =========================================================
+   ROAD INFORMATION
+   ========================================================= */
+
+.road-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(130px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.road-card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+}
+
+.road-number {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* =========================================================
+   ALERT
+   ========================================================= */
+
+.alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.alert-safe {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.hidden {
+    display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .sidebar {
+        display: none;
+    }
+
+    .camera-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .road-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
+
+<div class="header">
+
+    Intelligent Vehicle Safety & Driver Monitoring
+
+</div>
+
+
+<div class="layout">
+
+
+<!-- =======================================================
+     SIDEBAR
+     ======================================================= -->
+
+<div class="sidebar">
+
+    <div class="sidebar-title">
+        MONITORING SYSTEM
+    </div>
+
+    <div class="sidebar-item active">
+        Dashboard
+    </div>
+
+    <div class="sidebar-item">
+        Driver Monitoring
+    </div>
+
+    <div class="sidebar-item">
+        Safety Alerts
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     MAIN
+     ======================================================= -->
+
+<div class="main">
+
+
+<!-- =======================================================
+     TWO CAMERAS
+     ======================================================= -->
+
+<div class="section-title">
+    Live Camera Monitoring
+</div>
+
+
+<div class="camera-grid">
+
+
+<!-- DRIVER CAMERA -->
+
+<div class="camera-card">
+
+    <div class="camera-title">
+
+        Driver Camera
+
+        <span class="camera-status">
+            PC1
+        </span>
+
+    </div>
+
+    <div class="camera-frame">
+
+        <img
+            src="/video_feed"
+            alt="Driver Camera"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- ROAD CAMERA -->
+
+<div class="camera-card">
+
+    <div class="camera-title">
+
+        Front / Road Camera
+
+        <span class="camera-status">
+            PC2
+        </span>
+
+    </div>
+
+    <div class="camera-frame">
+
+        <img
+            src="http://10.255.248.108:6001/video_feed"
+            alt="Front Road Camera"
+            onerror="roadCameraError()"
+        >
+
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =======================================================
+     DRIVER STATUS
+     ======================================================= -->
+
+<div class="section-title">
+    Driver Safety Status
+</div>
+
+
+<div class="status-grid">
+
+
+<div class="status-card">
+
+    <div class="status-label">
+        Drowsiness
+    </div>
+
+    <div
+        id="drowsinessStatus"
+        class="status-value">
+        SAFE
+    </div>
+
+</div>
+
+
+<div class="status-card">
+
+    <div class="status-label">
+        Distraction
+    </div>
+
+    <div
+        id="distractionStatus"
+        class="status-value">
+        SAFE
+    </div>
+
+</div>
+
+
+<div class="status-card">
+
+    <div class="status-label">
+        Yawning
+    </div>
+
+    <div
+        id="yawningStatus"
+        class="status-value">
+        0 / 4
+    </div>
+
+</div>
+
+
+<div class="status-card">
+
+    <div class="status-label">
+        Seatbelt
+    </div>
+
+    <div
+        id="seatbeltStatus"
+        class="status-value">
+        Unknown
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =======================================================
+     ROAD STATUS
+     ======================================================= -->
+
+<div class="section-title">
+    Road Monitoring
+</div>
+
+
+<div class="road-grid">
+
+
+<div class="road-card">
+
+    <div class="status-label">
+        Vehicles
+    </div>
+
+    <div
+        id="vehicles"
+        class="road-number">
+        0
+    </div>
+
+</div>
+
+
+<div class="road-card">
+
+    <div class="status-label">
+        People
+    </div>
+
+    <div
+        id="people"
+        class="road-number">
+        0
+    </div>
+
+</div>
+
+
+<div class="road-card">
+
+    <div class="status-label">
+        Motorcycles
+    </div>
+
+    <div
+        id="motorcycles"
+        class="road-number">
+        0
+    </div>
+
+</div>
+
+
+<div class="road-card">
+
+    <div class="status-label">
+        Trucks
+    </div>
+
+    <div
+        id="trucks"
+        class="road-number">
+        0
+    </div>
+
+</div>
+
+
+</div>
+
+
+<!-- =======================================================
+     ROAD CONDITION
+     ======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        Road Condition
+    </div>
+
+    <div
+        id="roadCondition"
+        class="alert alert-safe">
+
+        ROAD SAFE
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     SIMULATED BRAKING
+     ======================================================= -->
+
+<div
+    id="brakingPanel"
+    class="panel hidden">
+
+    <div class="panel-title">
+        Simulated Slow Braking
+    </div>
+
+    <div
+        id="brakingMessage"
+        class="alert alert-warning">
+
+        Simulated braking active.
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     POLICE INFORMATION
+     ======================================================= -->
+
+<div
+    id="policePanel"
+    class="panel hidden">
+
+    <div class="panel-title">
+        Police Information Alert
+    </div>
+
+    <div class="alert alert-danger">
+
+        Repeated unsafe behavior detected.
+        Police information alert simulated.
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     SAFETY ALERTS
+     ======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        Safety Alerts
+    </div>
+
+    <div
+        id="safetyAlert"
+        class="alert alert-safe">
+
+        System operating normally.
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     MONITORING STATUS
+     ======================================================= -->
+
+<div class="panel">
+
+    <div class="panel-title">
+        Monitoring Status
+    </div>
+
+    <p>
+        Driver camera:
+        <strong>PC1</strong>
+    </p>
+
+    <p>
+        Front / road camera:
+        <strong>PC2</strong>
+    </p>
+
+    <p>
+        PC2 address:
+        <strong>10.255.248.108</strong>
+    </p>
+
+    <p>
+        Road camera server:
+        <strong>Port 6001</strong>
+    </p>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   ROAD CAMERA ERROR
+   ========================================================= */
+
+function roadCameraError() {
+
+    console.log(
+        "PC2 road camera stream unavailable."
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE DASHBOARD
+   ========================================================= */
+
+async function updateDashboard() {
+
+    try {
+
+        const response =
+            await fetch("/api/status");
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Status request failed"
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+
+        const driver =
+            data.driver || data;
+
+
+        const road =
+            data.road || {};
+
+
+        /* DRIVER */
+
+        const drowsiness =
+            document.getElementById(
+                "drowsinessStatus"
+            );
+
+        const distraction =
+            document.getElementById(
+                "distractionStatus"
+            );
+
+        const yawning =
+            document.getElementById(
+                "yawningStatus"
+            );
+
+        const seatbelt =
+            document.getElementById(
+                "seatbeltStatus"
+            );
+
+
+        if (driver.drowsiness) {
+
+            drowsiness.textContent =
+                "DROWSY";
+
+        } else {
+
+            drowsiness.textContent =
+                "SAFE";
+
+        }
+
+
+        if (
+            driver.phone_usage &&
+            driver.distraction
+        ) {
+
+            distraction.textContent =
+                "PHONE";
+
+        } else if (driver.distraction) {
+
+            distraction.textContent =
+                "DISTRACTED";
+
+        } else {
+
+            distraction.textContent =
+                "SAFE";
+
+        }
+
+
+        const yawnCount =
+            driver.yawn_count ?? 0;
+
+        const yawnLimit =
+            driver.yawn_limit ?? 4;
+
+
+        yawning.textContent =
+            `${yawnCount} / ${yawnLimit}`;
+
+
+        seatbelt.textContent =
+            driver.seatbelt ?? "Unknown";
+
+
+        /* ROAD */
+
+        document.getElementById(
+            "vehicles"
+        ).textContent =
+            road.vehicles ?? 0;
+
+
+        document.getElementById(
+            "people"
+        ).textContent =
+            road.people ?? 0;
+
+
+        document.getElementById(
+            "motorcycles"
+        ).textContent =
+            road.motorcycles ?? 0;
+
+
+        document.getElementById(
+            "trucks"
+        ).textContent =
+            road.trucks ?? 0;
+
+
+        /* ROAD CONDITION */
+
+        const roadCondition =
+            document.getElementById(
+                "roadCondition"
+            );
+
+
+        if (road.hazard) {
+
+            roadCondition.textContent =
+                "ROAD HAZARD DETECTED";
+
+            roadCondition.className =
+                "alert alert-danger";
+
+        } else {
+
+            roadCondition.textContent =
+                "ROAD SAFE";
+
+            roadCondition.className =
+                "alert alert-safe";
+
+        }
+
+
+        /* BRAKING */
+
+        const brakingPanel =
+            document.getElementById(
+                "brakingPanel"
+            );
+
+
+        if (driver.simulated_braking) {
+
+            brakingPanel.classList.remove(
+                "hidden"
+            );
+
+
+            document.getElementById(
+                "brakingMessage"
+            ).textContent =
+                "Simulated slow braking active: " +
+                (driver.slowdown_level ?? 0) +
+                "%";
+
+        } else {
+
+            brakingPanel.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* POLICE */
+
+        const policePanel =
+            document.getElementById(
+                "policePanel"
+            );
+
+
+        if (driver.police_notice) {
+
+            policePanel.classList.remove(
+                "hidden"
+            );
+
+        } else {
+
+            policePanel.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* SAFETY ALERT */
+
+        const safetyAlert =
+            document.getElementById(
+                "safetyAlert"
+            );
+
+
+        if (
+            driver.emergency_alert ||
+            driver.simulated_braking
+        ) {
+
+            safetyAlert.textContent =
+                "EMERGENCY SAFETY RESPONSE ACTIVE";
+
+            safetyAlert.className =
+                "alert alert-danger";
+
+        } else if (
+            driver.drowsiness ||
+            driver.distraction ||
+            driver.yawning
+        ) {
+
+            safetyAlert.textContent =
+                "Unsafe driver behavior detected.";
+
+            safetyAlert.className =
+                "alert alert-warning";
+
+        } else if (road.hazard) {
+
+            safetyAlert.textContent =
+                "Road hazard detected.";
+
+            safetyAlert.className =
+                "alert alert-warning";
+
+        } else {
+
+            safetyAlert.textContent =
+                "System operating normally.";
+
+            safetyAlert.className =
+                "alert alert-safe";
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.log(
+            "Dashboard update error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   START POLLING
+   ========================================================= */
+
+setInterval(
+    updateDashboard,
+    500
+);
+
+updateDashboard();
+
+</script>
+
+</body>
+
+</html>

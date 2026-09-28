@@ -1,0 +1,13 @@
+{
+  "pc1_host": "0.0.0.0",
+  "pc1_port": 5000,
+  "pc1_ip": "192.168.1.100",
+  "driver_camera_index": 0,
+  "road_camera_index": 0,
+  "drowsiness_seconds": 2.0,
+  "distraction_seconds": 3.0,
+  "yawn_limit": 4,
+  "emergency_violation_limit": 2,
+  "police_information_limit": 5,
+  "pc2_port": 6000
+}
